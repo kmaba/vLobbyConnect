@@ -6,10 +6,10 @@ import com.velocitypowered.api.event.player.PlayerChooseInitialServerEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import org.slf4j.Logger;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -28,10 +28,17 @@ public final class VelocityPlugin {
 	@Inject
 	private Logger logger;
 
+	private final ProxyServer proxyServer;
+
 	private RegisteredServer lobby1;
 	private RegisteredServer lobby2;
 	private RegisteredServer lobby3;
 	private RegisteredServer lobby4;
+
+	@Inject
+	public VelocityPlugin(ProxyServer proxyServer) {
+		this.proxyServer = proxyServer;
+	}
 
 	@Subscribe
 	void onProxyInitialization(final ProxyInitializeEvent event) {
@@ -41,10 +48,10 @@ public final class VelocityPlugin {
 			Map<String, Object> config = yaml.load(Files.newInputStream(Paths.get("src/main/resources/config.yml")));
 			Map<String, String> lobbies = (Map<String, String>) config.get("lobbies");
 
-			Optional<RegisteredServer> lobby1Opt = event.getServer().getServer(lobbies.get("lobby1"));
-			Optional<RegisteredServer> lobby2Opt = event.getServer().getServer(lobbies.get("lobby2"));
-			Optional<RegisteredServer> lobby3Opt = event.getServer().getServer(lobbies.get("lobby3"));
-			Optional<RegisteredServer> lobby4Opt = event.getServer().getServer(lobbies.get("lobby4"));
+			Optional<RegisteredServer> lobby1Opt = proxyServer.getServer(lobbies.get("lobby1"));
+			Optional<RegisteredServer> lobby2Opt = proxyServer.getServer(lobbies.get("lobby2"));
+			Optional<RegisteredServer> lobby3Opt = proxyServer.getServer(lobbies.get("lobby3"));
+			Optional<RegisteredServer> lobby4Opt = proxyServer.getServer(lobbies.get("lobby4"));
 
 			if (lobby1Opt.isPresent() && lobby2Opt.isPresent() && lobby3Opt.isPresent() && lobby4Opt.isPresent()) {
 				lobby1 = lobby1Opt.get();
@@ -83,7 +90,7 @@ public final class VelocityPlugin {
 				logger.info("Redirecting player {} to lobby3", player.getUsername());
 			} else if (lobby4.getPlayersConnected().size() < lobby4.getServerInfo().getMaxPlayers()) {
 				event.setInitialServer(lobby4);
-				logger.info("Redirecting player {} to lobby4", player.getUsername());
+				logger.info("Redirecting player {} to lobby4");
 			} else {
 				logger.warn("All 1.8 lobbies are full. Player {} could not be redirected.", player.getUsername());
 			}
