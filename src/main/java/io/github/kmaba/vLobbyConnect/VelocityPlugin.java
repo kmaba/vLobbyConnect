@@ -5,6 +5,7 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.player.PlayerChooseInitialServerEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
+import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
@@ -87,6 +88,9 @@ public void onProxyInitialize(ProxyInitializeEvent event) {
     // Register commands
     server.getCommandManager().register("hub", new HubCommand(server, logger));
     server.getCommandManager().register("lobby", new LobbyCommand(server, logger));
+
+    // Register event listener for gameserver stops
+    server.getEventManager().register(this, this);
 }
 
 	@Subscribe(order = PostOrder.FIRST)
@@ -127,5 +131,12 @@ public void onProxyInitialize(ProxyInitializeEvent event) {
         UUID uuid = player.getUniqueId();
         connectionAttempts.remove(uuid);
         logger.info("Player {} disconnected.", player.getUsername());
+    }
+
+    @Subscribe
+    public void onGameServerStop(ProxyShutdownEvent event) {
+        for (Player player : server.getAllPlayers()) {
+            player.disconnect(Component.text("The gameserver has stopped. You have been kicked."));
+        }
     }
 }
