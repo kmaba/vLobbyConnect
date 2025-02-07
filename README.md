@@ -43,8 +43,9 @@ try = []             # keep fallback empty
 ## ⚡ Commands  
 - **/lobby**  
 - **/hub**  
+- **/vlobbyconnectreload**
 
-These 2 Instantly teleports the player to the appropriate lobby.
+These 3 commands instantly teleport the player to the appropriate lobby or reload the plugin configuration.
 
 ## 🛡️ Future Enhancements (Planned Features)  
 - **Customizable Messages** – Modify join/fallback messages in `config.yml`.  
