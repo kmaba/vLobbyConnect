@@ -1,0 +1,13 @@
+name: vLobbyConnect
+main: io.github.kmaba.vLobbyConnect.VelocityPlugin
+version: 2.1.0
+description: A Velocity Plugin for Lobby Connection
+authors: [kmaba]
+commands:
+  hub:
+    description: Teleport to the hub
+    aliases: [lobby]
+  vlobbyconnectreload:
+    description: Reload the vLobbyConnect configuration
+    permission: vlobbyconnect.reload
+    default: op

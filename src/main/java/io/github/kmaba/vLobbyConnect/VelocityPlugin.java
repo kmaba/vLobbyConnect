@@ -5,7 +5,6 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.player.PlayerChooseInitialServerEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
-import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import org.slf4j.Logger;
@@ -30,6 +29,8 @@ import java.util.HashMap;
 import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import com.velocitypowered.api.plugin.Plugin;
 
 @Plugin(
 	id = "vlobbyconnect",
@@ -107,6 +108,7 @@ public final class VelocityPlugin {
 		// Register commands
 		server.getCommandManager().register("hub", new HubCommand(server, logger));
 		server.getCommandManager().register("lobby", new LobbyCommand(server, logger));
+		server.getCommandManager().register("vlobbyconnectreload", new ReloadCommand(server, logger, versionLobbies));
 	}
 
 	@Subscribe(order = PostOrder.FIRST)
